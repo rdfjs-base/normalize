@@ -1,7 +1,7 @@
 {
   "name": "rdf-normalize",
   "version": "0.1.0",
-  "description": "Graph normalization",
+  "description": "RDF graph normalization",
   "main": "index.js",
   "scripts": {
     "test": "standard && node_modules/mocha/bin/mocha"

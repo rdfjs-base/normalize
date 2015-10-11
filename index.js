@@ -1,13 +1,3 @@
-/*function sha1Sum (nquads) {
-  var hash = crypto.createHash('sha1')
-
-  nquads.forEach(function (nquad) {
-    hash.update(nquad)
-  })
-
-  return hash.digest('hex')
-}*/
-
 var jsonldNormalize = require('./jsonld-normalize')
 
 function createPlainNode (node) {
@@ -26,7 +16,6 @@ function createPlainNode (node) {
   } else if (node.interfaceName === 'Literal') {
     plain.type = 'literal'
     plain.value = node.nominalValue
-    //plain.datatype = !!node.datatype ? node.datatype.nominalValue : 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString'
     plain.datatype = node.datatype.nominalValue
     plain.language = node.language
   }

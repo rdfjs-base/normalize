@@ -1,3 +1,3 @@
-# rdf-graph-array
+# rdf-normalize
 
-Graph implementation using arrays.
+RDF graph normalization.
