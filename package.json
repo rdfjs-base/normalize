@@ -1,0 +1,26 @@
+{
+  "name": "rdf-normalize",
+  "version": "0.1.0",
+  "description": "Graph normalization",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rdf-ext/rdf-normalize.git"
+  },
+  "keywords": [
+    "rdf",
+    "normalize"
+  ],
+  "author": "Thomas Bergwinkl <bergi@axolotlfarm.org> (https://www.bergnet.org/people/bergi/card#me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rdf-ext/rdf-normalize/issues"
+  },
+  "homepage": "https://github.com/rdf-ext/rdf-normalize",
+  "devDependencies": {
+    "mocha": "^2.2.5"
+  }
+}
