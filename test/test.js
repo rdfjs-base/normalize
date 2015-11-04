@@ -51,8 +51,8 @@ function processTest (graph, subject) {
         .nominalValue
 
       Promise.all([
-        testUtils.p.readFile('./support/' + action, __dirname),
-        testUtils.p.readFile('./support/' + result, __dirname)
+        testUtils.readFile('./support/' + action, __dirname),
+        testUtils.readFile('./support/' + result, __dirname)
       ]).then(function (contents) {
         var input = contents[0]
         var expected = contents[1]
@@ -72,7 +72,7 @@ function processTest (graph, subject) {
 }
 
 function processManifest (filename) {
-  return testUtils.p.readFile(filename, __dirname).then(function (content) {
+  return testUtils.readFile(filename, __dirname).then(function (content) {
     return N3Parser.parse(content)
   }).then(function (graph) {
     var testEntry = graph.match(null, entries).toArray().shift().object
