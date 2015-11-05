@@ -1,10 +1,11 @@
 {
   "name": "rdf-normalize",
-  "version": "0.1.0",
+  "version": "0.3.0-rc1",
   "description": "RDF graph normalization",
   "main": "index.js",
   "scripts": {
-    "test": "standard && node_modules/mocha/bin/mocha"
+    "lint": "standard index.js test/testjs",
+    "test": "node_modules/.bin/mocha --delay"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,8 @@
   },
   "homepage": "https://github.com/rdf-ext/rdf-normalize",
   "devDependencies": {
-    "mocha": "^2.2.5"
+    "mocha": "^2.3.3",
+    "rdf-parser-n3": "^0.3.0-rc1",
+    "rdf-test-utils": "^0.3.0-rc1"
   }
 }
