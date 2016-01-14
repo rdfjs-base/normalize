@@ -1,6 +1,6 @@
 {
   "name": "rdf-normalize",
-  "version": "0.3.0-rc1",
+  "version": "0.3.0",
   "description": "RDF graph normalization",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   "devDependencies": {
     "lodash": "^3.10.1",
     "mocha": "^2.3.3",
-    "rdf-parser-n3": "^0.3.0-rc1",
-    "rdf-test-utils": "^0.3.0-rc1"
+    "rdf-parser-n3": "^0.3.0",
+    "rdf-test-utils": "^0.3.0"
   }
 }
