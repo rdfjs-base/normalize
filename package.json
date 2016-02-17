@@ -3,6 +3,9 @@
   "version": "0.3.0",
   "description": "RDF graph normalization",
   "main": "index.js",
+  "browser": {
+    "./sha1.js": "./browser/sha1.js"
+  },
   "scripts": {
     "lint": "standard index.js test/testjs",
     "test": "node_modules/.bin/mocha --delay"
@@ -25,6 +28,7 @@
     "lodash": "^3.10.1",
     "mocha": "^2.3.3",
     "rdf-parser-n3": "^0.3.0",
-    "rdf-test-utils": "^0.3.0"
+    "rdf-test-utils": "^0.3.0",
+    "sha.js": "^2.4.4"
   }
 }
