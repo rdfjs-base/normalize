@@ -7,16 +7,16 @@ function createPlainNode (node) {
 
   var plain = {}
 
-  if (node.interfaceName === 'NamedNode') {
+  if (node.termType === 'NamedNode') {
     plain.type = 'IRI'
-    plain.value = node.nominalValue
-  } else if (node.interfaceName === 'BlankNode') {
+    plain.value = node.value
+  } else if (node.termType === 'BlankNode') {
     plain.type = 'blank node'
-    plain.value = node.toString()
-  } else if (node.interfaceName === 'Literal') {
+    plain.value = + '_:' + node.value
+  } else if (node.termType === 'Literal') {
     plain.type = 'literal'
-    plain.value = node.nominalValue
-    plain.datatype = node.datatype.nominalValue
+    plain.value = node.value
+    plain.datatype = node.datatype.value
     plain.language = node.language
   }
 
@@ -37,8 +37,8 @@ function createPlainDataset (graph) {
   graph.forEach(function (quad) {
     var name = '@default'
 
-    if ('graph' in quad && quad.graph.nominalValue) {
-      name = quad.graph.nominalValue
+    if ('graph' in quad && quad.graph.value) {
+      name = quad.graph.value
     }
 
     if (!(name in dataset)) {
