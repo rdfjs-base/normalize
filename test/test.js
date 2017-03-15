@@ -1,28 +1,24 @@
-/* global before, describe, it */
-var _ = require('lodash')
-var assert = require('assert')
-var normalize = require('../index')
-var testUtils = require('rdf-test-utils')
-var N3Parser = require('rdf-parser-n3')
+'use strict'
 
-var ns = 'http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#'
-var entries = ns + 'entries'
+/* global describe, it, run */
 
-function listItems (graph, entry) {
-  var items = []
+const assert = require('assert')
+const fs = require('fs')
+const normalize = require('..')
+const path = require('path')
+const rdf = require('rdf-ext')
+const N3Parser = require('rdf-parser-n3')
 
-  while(!entry.equals('http://www.w3.org/1999/02/22-rdf-syntax-ns#nil')) {
-    items.push(graph.match(entry, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first').toArray().shift().object)
-    entry = graph.match(entry, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest').toArray().shift().object
-  }
-
-  return items
+const ns = {
+  action: rdf.namedNode('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action'),
+  entries: rdf.namedNode('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#entries'),
+  first: rdf.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#first'),
+  nil: rdf.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'),
+  rest: rdf.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#rest'),
+  result: rdf.namedNode('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result')
 }
 
-var exclude = [
-  'manifest-urgna2012#test044',
-  'manifest-urgna2012#test045',
-  'manifest-urgna2012#test046',
+const exclude = [
   'manifest-urdna2015#test023',
   'manifest-urdna2015#test044',
   'manifest-urdna2015#test045',
@@ -30,81 +26,77 @@ var exclude = [
   'manifest-urdna2015#test057'
 ]
 
-function processTest (graph, subject) {
-  if (exclude.indexOf(subject.nominalValue) !== -1) {
-    return function () {}
+function readFile (filename, dirname) {
+  return fs.createReadStream(path.join(dirname, filename))
+}
+
+function readFileContent (filename, dirname) {
+  return Promise.resolve(fs.readFileSync(path.join(dirname, filename)).toString())
+}
+
+function readFileDataset (filename, dirname) {
+  let fileStream = readFile(filename, dirname)
+  let quadStream = N3Parser.read(fileStream)
+
+  return rdf.dataset().import(quadStream)
+}
+
+function listItems (graph, entry) {
+  let items = []
+
+  while (!entry.equals(ns.nil)) {
+    items.push(graph.match(entry, ns.first).toArray().shift().object)
+    entry = graph.match(entry, ns.rest).toArray().shift().object
   }
 
-  return function () {
-    it('should pass test ' + subject.toString(), function (done) {
-      var action = graph
-        .match(subject, 'http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action')
-        .toArray()
-        .shift()
-        .object
-        .nominalValue
-      var result = graph
-        .match(subject, 'http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result')
-        .toArray()
-        .shift()
-        .object
-        .nominalValue
+  return items
+}
 
-      Promise.all([
-        testUtils.readFile('./support/' + action, __dirname),
-        testUtils.readFile('./support/' + result, __dirname)
-      ]).then(function (contents) {
-        var input = contents[0]
-        var expected = contents[1]
+function processTest (graph, subject) {
+  if (exclude.indexOf(subject.value) !== -1) {
+    return () => {}
+  }
 
-        return N3Parser.parse(input).then(function (graph) {
-          var actual = normalize(graph)
+  return () => {
+    it('should pass test ' + subject.value, () => {
+      let action = graph.match(subject, ns.action).toArray().shift().object.value
+      let result = graph.match(subject, ns.result).toArray().shift().object.value
 
-          assert.equal(actual, expected)
+      return Promise.all([
+        readFileDataset('./support/' + action, __dirname),
+        readFileContent('./support/' + result, __dirname)
+      ]).then((contents) => {
+        let input = contents[0]
+        let expected = contents[1]
 
-          done()
-        })
-      }).catch(function (error) {
-        done(error)
+        let actual = normalize(input)
+
+        assert.equal(actual, expected)
       })
     })
   }
 }
 
 function processManifest (filename) {
-  return testUtils.readFile(filename, __dirname).then(function (content) {
-    return N3Parser.parse(content)
-  }).then(function (graph) {
-    var testEntry = graph.match(null, entries).toArray().shift().object
+  return readFileDataset(filename, __dirname).then((graph) => {
+    let testEntry = graph.match(null, ns.entries).toArray().shift().object
 
-    return listItems(graph, testEntry).map(function (testSubject) {
+    return listItems(graph, testEntry).map((testSubject) => {
       return processTest(graph, testSubject)
     })
   })
 }
 
-Promise.all([
-  processManifest('./support/manifest-urgna2012.ttl'),
-  processManifest('./support/manifest-urdna2015.ttl')
-]).then(function(tests) {
-  var tests2012 = tests[0]
-  var tests2015 = tests[1]
-
-  describe('normalize', function () {
-    describe('RDF Graph Normalization (URGNA2012)', function () {
-      tests2012.forEach(function (test) {
-        test()
-      })
-    })
-
-    describe('RDF Dataset Normalization (URDNA2015)', function () {
-      tests2015.forEach(function (test) {
+processManifest('./support/manifest-urdna2015.ttl').then((tests) => {
+  describe('normalize', () => {
+    describe('RDF Dataset Normalization (URDNA2015)', () => {
+      tests.forEach((test) => {
         test()
       })
     })
   })
 
   run()
-}).catch(function (error) {
+}).catch((error) => {
   console.error(error.stack || error.message)
 })
