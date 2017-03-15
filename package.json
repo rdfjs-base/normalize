@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "standard index.js test/testjs",
-    "test": "mocha --delay"
+    "test": "npm run lint && mocha --delay"
   },
   "repository": {
     "type": "git",
@@ -21,10 +21,11 @@
     "url": "https://github.com/rdf-ext/rdf-normalize/issues"
   },
   "homepage": "https://github.com/rdf-ext/rdf-normalize",
+  "dependencies": {
+  },
   "devDependencies": {
-    "lodash": "^3.10.1",
-    "mocha": "^2.3.3",
-    "rdf-parser-n3": "^0.3.0",
-    "rdf-test-utils": "^0.3.0"
+    "mocha": "^3.2.0",
+    "rdf-ext": "git://github.com/rdf-ext/rdf-ext.git#develop",
+    "rdf-parser-n3": "git://github.com/rdf-ext/rdf-parser-n3.git#develop"
   }
 }
