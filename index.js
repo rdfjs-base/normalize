@@ -1,11 +1,11 @@
-var jsonldNormalize = require('./jsonld-normalize')
+const jsonldNormalize = require('./jsonld-normalize')
 
 function createPlainNode (node) {
   if (!node) {
     return null
   }
 
-  var plain = {}
+  let plain = {}
 
   if (node.termType === 'NamedNode') {
     plain.type = 'IRI'
@@ -32,10 +32,10 @@ function createPlainTriple (triple) {
 }
 
 function createPlainDataset (graph) {
-  var dataset = {}
+  let dataset = {}
 
-  graph.forEach(function (quad) {
-    var name = '@default'
+  graph.forEach((quad) => {
+    let name = '@default'
 
     if ('graph' in quad && quad.graph.value) {
       name = quad.graph.value
