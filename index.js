@@ -12,7 +12,7 @@ function createPlainNode (node) {
     plain.value = node.value
   } else if (node.termType === 'BlankNode') {
     plain.type = 'blank node'
-    plain.value = + '_:' + node.value
+    plain.value = '_:' + node.value
   } else if (node.termType === 'Literal') {
     plain.type = 'literal'
     plain.value = node.value
