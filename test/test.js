@@ -1,5 +1,3 @@
-'use strict'
-
 /* global describe, it, run */
 
 const assert = require('assert')
@@ -36,7 +34,7 @@ function readFileContent (filename, dirname) {
 
 function readFileDataset (filename, dirname) {
   let fileStream = readFile(filename, dirname)
-  let quadStream = N3Parser.read(fileStream)
+  let quadStream = N3Parser.import(fileStream)
 
   return rdf.dataset().import(quadStream)
 }
