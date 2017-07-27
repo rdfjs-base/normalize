@@ -1,6 +1,6 @@
 {
   "name": "rdf-normalize",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "RDF graph normalization",
   "main": "index.js",
   "scripts": {
@@ -22,8 +22,7 @@
     "url": "https://github.com/rdf-ext/rdf-normalize/issues"
   },
   "homepage": "https://github.com/rdf-ext/rdf-normalize",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "mocha": "^3.2.0",
     "rdf-ext": "^1.0.0",
