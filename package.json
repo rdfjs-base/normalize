@@ -5,6 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "coverage": "codecov",
     "fetch-test-suite": "if [ ! -e test/support/suite ]; then git clone --depth 1 https://github.com/json-ld/normalization.git test/support/suite; fi",
     "test": "stricter-standard index.js test/test.js test/support/*.js && npm run fetch-test-suite && mocha --delay"
   },
