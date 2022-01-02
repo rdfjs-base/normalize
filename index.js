@@ -1,58 +1,33 @@
-const jsonldNormalize = require('./jsonld-normalize')
+import URDNA2015Sync from 'rdf-canonize/lib/URDNA2015Sync.js'
 
-function createPlainNode (node) {
-  if (!node) {
-    return null
-  }
-
-  let plain = {}
-
-  if (node.termType === 'NamedNode') {
-    plain.type = 'IRI'
-    plain.value = node.value
-  } else if (node.termType === 'BlankNode') {
-    plain.type = 'blank node'
-    plain.value = '_:' + node.value
-  } else if (node.termType === 'Literal') {
-    plain.type = 'literal'
-    plain.value = node.value
-    plain.datatype = node.datatype.value
-    plain.language = node.language
-  }
-
-  return plain
-}
-
-function createPlainTriple (triple) {
+function toJsonldQuad (quad) {
   return {
-    subject: createPlainNode(triple.subject),
-    predicate: createPlainNode(triple.predicate),
-    object: createPlainNode(triple.object)
+    subject: toJsonldTerm(quad.subject),
+    predicate: toJsonldTerm(quad.predicate),
+    object: toJsonldTerm(quad.object),
+    graph: toJsonldTerm(quad.graph)
   }
 }
 
-function createPlainDataset (graph) {
-  let dataset = {}
-
-  graph.forEach((quad) => {
-    let name = '@default'
-
-    if ('graph' in quad && quad.graph.value) {
-      name = quad.graph.value
+function toJsonldTerm (term) {
+  if (term.termType === 'BlankNode') {
+    return {
+      termType: 'BlankNode',
+      value: `_:${term.value}`
     }
+  }
 
-    if (!(name in dataset)) {
-      dataset[name] = []
-    }
-
-    dataset[name].push(createPlainTriple(quad))
-  })
-
-  return dataset
+  return term
 }
 
-function normalize (graph) {
-  return jsonldNormalize(createPlainDataset(graph))
+function toJsonldDataset (dataset) {
+  return [...dataset].map(quad => toJsonldQuad(quad))
 }
 
-module.exports = normalize
+function normalize (dataset) {
+  const canonize = new URDNA2015Sync()
+
+  return canonize.main(toJsonldDataset(dataset))
+}
+
+export default normalize
