@@ -1,6 +1,6 @@
-import { readFile } from 'fs/promises'
-import getStream from 'get-stream'
+import { readFile } from 'node:fs/promises'
 import fromFile from 'rdf-utils-fs/fromFile.js'
+import chunks from 'stream-chunks/chunks.js'
 
 import rdf from './factory.js'
 
@@ -29,7 +29,7 @@ async function readFileContent (filename) {
 
 async function readFileDataset (filename) {
   const stream = fromFile((new URL(`suite/tests/${filename}`, import.meta.url)).pathname)
-  const quads = await getStream.array(stream)
+  const quads = await chunks(stream)
 
   return rdf.dataset(quads)
 }

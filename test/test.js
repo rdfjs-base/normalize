@@ -1,4 +1,4 @@
-import { strictEqual } from 'assert'
+import { strictEqual } from 'node:assert'
 import { describe, it, run } from 'mocha'
 import normalize from '../index.js'
 import rdf from './support/factory.js'
