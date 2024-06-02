@@ -1,4 +1,4 @@
-import URDNA2015Sync from 'rdf-canonize/lib/URDNA2015Sync.js'
+import RDFC10Sync from 'rdf-canonize/lib/RDFC10Sync.js'
 
 function toJsonldQuad (quad) {
   return {
@@ -25,7 +25,7 @@ function toJsonldDataset (dataset) {
 }
 
 function normalize (dataset) {
-  const canonize = new URDNA2015Sync()
+  const canonize = new RDFC10Sync()
 
   return canonize.main(toJsonldDataset(dataset))
 }

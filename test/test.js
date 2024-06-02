@@ -7,15 +7,12 @@ import { listToArray, readFileContent, readFileDataset } from './support/utils.j
 const ns = {
   action: rdf.namedNode('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action'),
   entries: rdf.namedNode('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#entries'),
-  result: rdf.namedNode('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result')
+  result: rdf.namedNode('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result'),
+  complexity: rdf.namedNode('https://w3c.github.io/rdf-canon/tests/vocab#computationalComplexity')
 }
 
 const exclude = new Set([
-  'manifest-urdna2015#test023',
-  'manifest-urdna2015#test044',
-  'manifest-urdna2015#test045',
-  'manifest-urdna2015#test046',
-  'manifest-urdna2015#test057'
+  'manifest#test075c' // ignore SHA384
 ])
 
 async function loadTest (dataset, term) {
@@ -23,8 +20,24 @@ async function loadTest (dataset, term) {
     return null
   }
 
-  const action = [...dataset.match(term, ns.action)][0].object.value
-  const result = [...dataset.match(term, ns.result)][0].object.value
+  const action = [...dataset.match(term, ns.action)][0]?.object.value
+  const result = [...dataset.match(term, ns.result)][0]?.object.value
+  const complexity = [...dataset.match(term, ns.complexity)][0]?.object.value
+
+  if (!action || !result) {
+    return null
+  }
+
+  // ignore all map tests
+  if (term.value.endsWith('m')) {
+    return null
+  }
+
+  // ignore all medium or high complexity tests
+  if (complexity === 'medium' || complexity === 'high') {
+    return null
+  }
+
   const input = await readFileDataset(action)
   const expected = await readFileContent(result)
 
@@ -51,9 +64,9 @@ async function loadTests (filename) {
   return tests.filter(Boolean)
 }
 
-loadTests('manifest-urdna2015.ttl').then(tests => {
+loadTests('manifest.ttl').then(tests => {
   describe('@rdfjs/normalize', () => {
-    describe('RDF Dataset Normalization (URDNA2015)', () => {
+    describe('RDF Dataset Normalization (RDFC-1.0)', () => {
       for (const test of tests) {
         test()
       }
