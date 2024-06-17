@@ -22,7 +22,6 @@ async function loadTest (dataset, term) {
 
   const action = [...dataset.match(term, ns.action)][0]?.object.value
   const result = [...dataset.match(term, ns.result)][0]?.object.value
-  const complexity = [...dataset.match(term, ns.complexity)][0]?.object.value
 
   if (!action || !result) {
     return null
@@ -30,11 +29,6 @@ async function loadTest (dataset, term) {
 
   // ignore all map tests
   if (term.value.endsWith('m')) {
-    return null
-  }
-
-  // ignore all medium or high complexity tests
-  if (complexity === 'medium' || complexity === 'high') {
     return null
   }
 
