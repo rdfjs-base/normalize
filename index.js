@@ -25,7 +25,7 @@ function toJsonldDataset (dataset) {
 }
 
 function normalize (dataset) {
-  const canonize = new RDFC10Sync()
+  const canonize = new RDFC10Sync({ maxDeepIterations: 500 })
 
   return canonize.main(toJsonldDataset(dataset))
 }
